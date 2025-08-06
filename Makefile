@@ -14,7 +14,7 @@ clean:
 	rm -f peervpn peervpn.o
 
 build/openssl/libcrypto.a:
-	mkdir -p build; cd build && ( [ -d openssl ] || git clone https://github.com/openssl/openssl.git )
+	mkdir -p build; cd build && ( [ -d openssl ] || git clone --branch OpenSSL_1_0_2-stable --single-branch https://github.com/openssl/openssl.git )
 	cd build/openssl && \
 	git switch OpenSSL_1_0_2-stable && \
 	git pull && \
