@@ -1,12 +1,23 @@
-CFLAGS+=-O2
-LIBS+=-lcrypto -lz
+CFLAGS+=-O2 -Ibuild/openssl/include
+
+LIBS+=-Lbuild/openssl -lcrypto -ldl -lz
 
 all: peervpn
-peervpn: peervpn.o
+
+peervpn: build/openssl/libcrypto.a peervpn.o
 	$(CC) $(LDFLAGS) peervpn.o $(LIBS) -o $@
+	strip peervpn
+
 peervpn.o: peervpn.c
 
-install:
-	install peervpn /usr/local/sbin/peervpn
 clean:
 	rm -f peervpn peervpn.o
+
+build/openssl/libcrypto.a:
+	mkdir -p build; cd build && ( [ -d openssl ] || git clone https://github.com/openssl/openssl.git )
+	cd build/openssl && \
+	git switch OpenSSL_1_0_2-stable && \
+	git pull && \
+	./config no-shared && \
+	make clean && \
+	make -j12
